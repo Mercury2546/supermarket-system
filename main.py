@@ -208,7 +208,7 @@ def add_product():
                       "PRICE:", product_price_list[i], "THB")
                 print("----------------------------------------------")
 
-    choice_add_product = input("Do you want to add product more ? : ")
+    choice_add_product = input("Do you want to add product more ? (y/n) : ")
     if choice_add_product == 'Y' or choice_add_product == 'y':
         add_product()
     elif choice_add_product == 'N' or choice_add_product == 'n':
