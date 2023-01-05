@@ -177,7 +177,7 @@ def add_product():
                         print("----------------------------------------------")
 
     else:
-        product_name = input("Please Enter Name of Product : ")
+        product_name = input("Please Enter Name of Product : ").capitalize()
         product_quantity = int(input("Please Enter Quantity of Product : "))
         product_price = int(input("Please Enter Price of Product : "))
 
