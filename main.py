@@ -1,6 +1,6 @@
 import os
 import json
-path1 = r'productList.json'
+path1 = r'product.json'
 path2 = r'totalList.json'
 
 
@@ -83,6 +83,64 @@ def customer_menu():
         menu()
 
 
+def read_file():
+    with open('product.json') as file:
+        product_dict = json.load(file)
+
+        product_list = list(product_dict.values())
+        product_name_list = product_list[0]
+        product_quantity_list = product_list[1]
+        product_price_list = product_list[2]
+        return product_dict
+
+
+def write_file(product_name, product_quantity, product_price):
+    if os.path.isfile(path1):
+        product_dict = {'name': [], 'quantity': [], 'price': []}
+        product_dict = read_file()
+        product_list = list(product_dict.values())
+        product_name_list = product_list[0]
+        product_quantity_list = product_list[1]
+        product_price_list = product_list[2]
+
+        product_name_list.append(product_name)
+        product_quantity_list.append(product_quantity)
+        product_price_list.append(product_price)
+
+        with open('product.json', mode='w', encoding='utf8') as file:
+            file.write(json.dumps(product_dict, indent=2))
+    else:
+        product_dict = {'name': [], 'quantity': [], 'price': []}
+        product_list = list(product_dict.values())
+        product_name_list = product_list[0]
+        product_quantity_list = product_list[1]
+        product_price_list = product_list[2]
+
+        product_name_list.append(product_name)
+        product_quantity_list.append(product_quantity)
+        product_price_list.append(product_price)
+
+        with open('product.json', mode='w', encoding='utf8') as file:
+            file.write(json.dumps(product_dict, indent=2))
+
+
+def show_product_list():
+    if os.path.isfile(path1):
+        with open('product.json') as file:
+            product_dict = json.load(file)
+
+            product_list = list(product_dict.values())
+            product_name_list = product_list[0]
+            product_quantity_list = product_list[1]
+            product_price_list = product_list[2]
+
+        for i in range(len(product_name_list)):
+            print([i + 1], "NAME:", product_name_list[i],
+                  "QUANTITY:", product_quantity_list[i],
+                  "PRICE:", product_price_list[i], "THB")
+            print("----------------------------------------------")
+
+
 def add_product():
     print("----------------------------------------------")
     print("               ADD PRODUCT MENU               ")
@@ -94,119 +152,58 @@ def add_product():
     product_price_list = product_list[2]
 
     if os.path.isfile(path1):
-        with open('productList.json') as productList_file:
-            product_dict = json.load(productList_file)
+        product_dict = read_file()
+        print("----------------------------------------------")
+        print("                PRODUCTS LIST                 ")
+        print("----------------------------------------------")
+        show_product_list()
 
-            product_list = list(product_dict.values())
-            product_name_list = product_list[0]
-            product_quantity_list = product_list[1]
-            product_price_list = product_list[2]
+        try:
+            product_name = input(
+                "Please Enter Name of Product : ").capitalize()
+            product_quantity = int(
+                input("Please Enter Quantity of Product : "))
+            product_price = int(input("Please Enter Price of Product : "))
+        except ValueError:
+            print("Please Enter Again!")
+            administrator_menu()
+
+        # File already exists
+        # Duplicate product name
+        if product_name in product_name_list:
+
+            print("The product is already in the list.")
+            print("----------------------------------------------")
+            print("                PRODUCTS LIST                 ")
+            print("----------------------------------------------")
+            show_product_list()
+
+        # File already exists
+        else:
+            print("File already exists.")
+            product_dict = read_file()
+            print(product_dict, "หลังการอ่านไฟล์")
+            write_file(product_name, product_quantity, product_price)
+            print(product_dict, "หลังจากการเขียนไฟล์")
 
             print("----------------------------------------------")
-            print("               ADD PRODUCT MENU               ")
+            print("                PRODUCTS LIST                 ")
             print("----------------------------------------------")
-            for i in range(len(product_name_list)):
-                print([i + 1], "NAME:", product_name_list[i],
-                      "QUANTITY:", product_quantity_list[i],
-                      "PRICE:", product_price_list[i], "THB")
-                print("----------------------------------------------")
-            try:
-                product_name = input("Please Enter Name of Product : ").capitalize()
-                product_quantity = int(input("Please Enter Quantity of Product : "))
-                product_price = int(input("Please Enter Price of Product : "))
-            except ValueError:
-                print("Please Enter Again!")
-                administrator_menu()
+            show_product_list()
 
-            # checks if product name already in list
-            if product_name in product_name_list:
-                # find the index of product_name_list
-                index = product_name_list.index(product_name)
-                # remove old quantity
-                product_quantity_list.remove(product_quantity_list[index])
-                # remove old price
-                product_price_list.remove(product_price_list[index])
-                # insert new quantity
-                product_quantity_list.insert(index, product_quantity)
-                # insert new price
-                product_price_list.insert(index, product_price)
-
-                with open('productList.json', mode='w', encoding='utf8') as productList_file_w:
-                    productList_file_w.write(json.dumps(product_dict, indent=2))
-
-                with open('productList.json') as productList_file_r:
-                    product_dict = json.load(productList_file_r)
-
-                    product_list = list(product_dict.values())
-                    product_name_list = product_list[0]
-                    product_quantity_list = product_list[1]
-                    product_price_list = product_list[2]
-
-                    print("----------------------------------------------")
-                    print("               ADD PRODUCT MENU               ")
-                    print("----------------------------------------------")
-                    for i in range(len(product_name_list)):
-                        print([i + 1], "NAME:", product_name_list[i],
-                              "QUANTITY:", product_quantity_list[i],
-                              "PRICE:", product_price_list[i], "THB")
-                        print("----------------------------------------------")
-
-            else:
-                product_name_list.append(product_name)
-                product_quantity_list.append(product_quantity)
-                product_price_list.append(product_price)
-
-                with open('productList.json', mode='w', encoding='utf8') as productList_file_w:
-                    productList_file_w.write(json.dumps(product_dict, indent=2))
-
-                with open('productList.json') as productList_file_r:
-                    product_dict = json.load(productList_file_r)
-
-                    product_list = list(product_dict.values())
-                    product_name_list = product_list[0]
-                    product_quantity_list = product_list[1]
-                    product_price_list = product_list[2]
-
-                    print("----------------------------------------------")
-                    print("               ADD PRODUCT MENU               ")
-                    print("----------------------------------------------")
-                    for i in range(len(product_name_list)):
-                        print([i + 1], "NAME:", product_name_list[i],
-                              "QUANTITY:", product_quantity_list[i],
-                              "PRICE:", product_price_list[i], "THB")
-                        print("----------------------------------------------")
-
+    # File doesn't exists
     else:
+        print("File doesn't exists")
         product_name = input("Please Enter Name of Product : ").capitalize()
         product_quantity = int(input("Please Enter Quantity of Product : "))
         product_price = int(input("Please Enter Price of Product : "))
 
-        product_name_list.append(product_name)
-        product_quantity_list.append(product_quantity)
-        product_price_list.append(product_price)
-        for i in range(len(product_name_list)):
-            print(product_name_list[i], product_quantity_list[i], product_price_list[i])
-
-        print("That doesn't exists. I will Create!")
-        with open('productList.json', mode='w', encoding='utf8') as productList_file:
-            productList_file.write(json.dumps(product_dict, indent=2))
-
-        with open('productList.json') as productList_file:
-            product_dict = json.load(productList_file)
-
-            product_list = list(product_dict.values())
-            product_name_list = product_list[0]
-            product_quantity_list = product_list[1]
-            product_price_list = product_list[2]
-
-            print("----------------------------------------------")
-            print("               ADD PRODUCT MENU               ")
-            print("----------------------------------------------")
-            for i in range(len(product_name_list)):
-                print([i + 1], "NAME:", product_name_list[i],
-                      "QUANTITY:", product_quantity_list[i],
-                      "PRICE:", product_price_list[i], "THB")
-                print("----------------------------------------------")
+        write_file(product_name, product_quantity, product_price)
+        print("Create products list file.")
+        print("----------------------------------------------")
+        print("                PRODUCTS LIST                 ")
+        print("----------------------------------------------")
+        show_product_list()
 
     choice_add_product = input("Do you want to add product more ? (y/n) : ")
     if choice_add_product == 'Y' or choice_add_product == 'y':
@@ -218,6 +215,7 @@ def add_product():
         menu()
 
 
+# Edit Product List
 def edit_product():
     print("----------------------------------------------")
     print("               EDIT PRODUCT MENU              ")
@@ -248,15 +246,18 @@ def edit_product():
                 product_price_list.remove(product_price_list[index])
 
                 product_name = input("Please Enter New Name of Product : ")
-                product_quantity = int(input("Please Enter New Quantity of Product : "))
-                product_price = int(input("Please Enter New Price of Product : "))
+                product_quantity = int(
+                    input("Please Enter New Quantity of Product : "))
+                product_price = int(
+                    input("Please Enter New Price of Product : "))
 
                 product_name_list.append(product_name)
                 product_quantity_list.append(product_quantity)
                 product_price_list.append(product_price)
 
                 with open('productList.json', mode='w', encoding='utf8') as productList_file_w:
-                    productList_file_w.write(json.dumps(product_dict, indent=2))
+                    productList_file_w.write(
+                        json.dumps(product_dict, indent=2))
 
                 with open('productList.json') as productList_file_r:
                     product_dict = json.load(productList_file_r)
@@ -275,7 +276,8 @@ def edit_product():
                               "PRICE:", product_price_list[i])
                         print("----------------------------------------------")
 
-                choice_edit_product = input("Do you want to edit product more ? (y/n) : ")
+                choice_edit_product = input(
+                    "Do you want to edit product more ? (y/n) : ")
                 if choice_edit_product == 'y' or choice_edit_product == 'Y':
                     edit_product()
                 elif choice_edit_product == 'N' or choice_edit_product == 'n':
@@ -322,7 +324,8 @@ def delete_product():
                 product_price_list.remove(product_price_list[index])
 
                 with open('productList.json', mode='w', encoding='utf8') as productList_file_w:
-                    productList_file_w.write(json.dumps(product_dict, indent=2))
+                    productList_file_w.write(
+                        json.dumps(product_dict, indent=2))
 
                 with open('productList.json') as productList_file_r:
                     product_dict = json.load(productList_file_r)
@@ -341,7 +344,8 @@ def delete_product():
                               "PRICE:", product_price_list[i], "THB")
                         print("----------------------------------------------")
 
-                choice_edit_product = input("Do you want to edit product more ? (y/n) : ")
+                choice_edit_product = input(
+                    "Do you want to edit product more ? (y/n) : ")
                 if choice_edit_product == 'y' or choice_edit_product == 'Y':
                     edit_product()
                 elif choice_edit_product == 'N' or choice_edit_product == 'n':
@@ -394,7 +398,8 @@ def sum_list(name, amount, price):
                 index = total_name_list.index(name)
 
                 # insert new quantity
-                total_quantity_list.insert(index+1, amount+total_quantity_list[index])
+                total_quantity_list.insert(
+                    index+1, amount+total_quantity_list[index])
                 # insert new price
                 total_price_list.insert(index+1, price+total_price_list[index])
 
@@ -410,7 +415,8 @@ def sum_list(name, amount, price):
                 total_quantity_list.append(amount)
                 total_price_list.append(price)
                 for i in range(len(total_name_list)):
-                    print(total_name_list[i], "x", total_quantity_list[i], "=", total_price_list[i], "THB")
+                    print(
+                        total_name_list[i], "x", total_quantity_list[i], "=", total_price_list[i], "THB")
 
                 with open('totalList.json', mode='w', encoding='utf8') as total_file_w:
                     total_file_w.write(json.dumps(total_dict, indent=2))
@@ -452,7 +458,8 @@ def print_receipt():
         print("                   RECEIPT                    ")
         print("----------------------------------------------")
         for x in range(len(total_name_list)):
-            print(total_name_list[x], "x", total_quantity_list[x], "=", total_price_list[x], "THB")
+            print(total_name_list[x], "x", total_quantity_list[x],
+                  "=", total_price_list[x], "THB")
         total()
 
 
@@ -475,7 +482,8 @@ def buy_product():
                       "QUANTITY:", product_quantity_list[i],
                       "PRICE:", product_price_list[i], "THB")
         print("----------------------------------------------")
-        product_name = input("What do you want to buy ? (name of product) : ").capitalize()
+        product_name = input(
+            "What do you want to buy ? (name of product) : ").capitalize()
         product_amount = int(input("Please Enter Amount of Product : "))
 
         if product_name in product_name_list:
@@ -487,7 +495,8 @@ def buy_product():
                 print("Please Enter Again.")
                 buy_product()
             elif product_quantity_list[i] > product_amount:
-                product_quantity_left = product_quantity_list[index] - product_amount
+                product_quantity_left = product_quantity_list[index] - \
+                    product_amount
                 product_quantity_list.insert(index + 1, product_quantity_left)
                 product_quantity_list.remove(product_quantity_list[index])
             else:

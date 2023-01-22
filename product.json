@@ -1,0 +1,17 @@
+{
+  "name": [
+    "Apple",
+    "Mango",
+    "Grape"
+  ],
+  "quantity": [
+    20,
+    20,
+    20
+  ],
+  "price": [
+    30,
+    50,
+    30
+  ]
+}
